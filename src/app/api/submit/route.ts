@@ -82,6 +82,6 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     console.error("Submit error:", message);
-    return NextResponse.json({ error: "Failed to submit" }, { status: 500, headers: corsHeaders });
+    return NextResponse.json({ error: "Failed to submit", detail: message }, { status: 500, headers: corsHeaders });
   }
 }
