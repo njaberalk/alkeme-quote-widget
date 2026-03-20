@@ -7,11 +7,13 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-const cio = new TrackClient(
-  process.env.CUSTOMERIO_SITE_ID!,
-  process.env.CUSTOMERIO_API_KEY!,
-  { region: RegionUS }
-);
+function getCioClient() {
+  return new TrackClient(
+    process.env.CUSTOMERIO_SITE_ID || "",
+    process.env.CUSTOMERIO_API_KEY || "",
+    { region: RegionUS }
+  );
+}
 
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders });
@@ -25,6 +27,13 @@ export async function POST(req: NextRequest) {
     if (!email || !fullName) {
       return NextResponse.json({ error: "Email and name are required" }, { status: 400, headers: corsHeaders });
     }
+
+    if (!process.env.CUSTOMERIO_SITE_ID || !process.env.CUSTOMERIO_API_KEY) {
+      console.error("Missing CUSTOMERIO_SITE_ID or CUSTOMERIO_API_KEY env vars");
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500, headers: corsHeaders });
+    }
+
+    const cio = getCioClient();
 
     // Identify (create or update) the person in Customer.io
     await cio.identify(email, {
