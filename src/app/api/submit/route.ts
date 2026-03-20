@@ -69,7 +69,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true }, { headers: corsHeaders });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error("Customer.io error:", message, error);
-    return NextResponse.json({ error: "Failed to submit", detail: message }, { status: 500, headers: corsHeaders });
+    const siteId = process.env.CUSTOMERIO_SITE_ID || "";
+    const apiKey = process.env.CUSTOMERIO_API_KEY || "";
+    return NextResponse.json({
+      error: "Failed to submit",
+      detail: message,
+      debug: { siteIdLen: siteId.length, apiKeyLen: apiKey.length, siteIdPrefix: siteId.substring(0, 4), apiKeyPrefix: apiKey.substring(0, 4) }
+    }, { status: 500, headers: corsHeaders });
   }
 }
