@@ -1214,12 +1214,11 @@ function InlineInput({
 }) {
   const display = value || placeholder;
   return (
-    <span style={{ position: "relative", display: "inline-block", verticalAlign: "baseline" }}>
-      <span aria-hidden="true" style={{ visibility: "hidden", whiteSpace: "pre", font: "inherit", padding: "0 0 4px 0", minWidth: "3ch", display: "inline-block" }}>{display}</span>
+    <span className="ifw-text-field-wrap">
+      <span className="ifw-text-field-sizer" aria-hidden="true">{display}</span>
       <input
         type={type}
         className={`ifw-text-field ${value ? "has-value" : ""}`}
-        style={{ position: "absolute", left: 0, top: 0, width: "100%", boxSizing: "border-box" }}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -1254,13 +1253,12 @@ function PhoneInput({
   };
 
   return (
-    <span style={{ position: "relative", display: "inline-block", verticalAlign: "baseline" }}>
-      <span aria-hidden="true" style={{ visibility: "hidden", whiteSpace: "pre", font: "inherit", padding: "0 0 4px 0", minWidth: "3ch", display: "inline-block" }}>{display}</span>
+    <span className="ifw-text-field-wrap">
+      <span className="ifw-text-field-sizer" aria-hidden="true">{display}</span>
       <input
         type="tel"
         inputMode="numeric"
         className={`ifw-text-field ${value ? "has-value" : ""}`}
-        style={{ position: "absolute", left: 0, top: 0, width: "100%", boxSizing: "border-box" }}
         placeholder={placeholder}
         value={displayValue}
         onChange={handleChange}

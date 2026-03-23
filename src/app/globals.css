@@ -199,9 +199,28 @@ body {
 
 /* ---- Inline text input ---- */
 
-.text-field {
-  display: inline-block;
+.text-field-wrap {
+  display: inline-grid;
   vertical-align: baseline;
+  min-width: 3ch;
+}
+
+.text-field-wrap > * {
+  grid-area: 1 / 1;
+  font: inherit;
+  font-weight: 300;
+  padding: 0 0 4px 0;
+  border-bottom: 3px solid transparent;
+  line-height: 1.2;
+}
+
+.text-field-sizer {
+  visibility: hidden;
+  white-space: pre;
+}
+
+.text-field {
+  width: 100%;
   font-family: inherit;
   font-size: inherit;
   font-weight: 300;
