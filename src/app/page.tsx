@@ -1240,21 +1240,23 @@ function InlineInput({
   onBlur?: () => void; ariaLabel?: string; autoComplete?: string; ariaDescribedBy?: string;
 }) {
   const display = value || placeholder;
-  const charCount = Math.max(display.length, 4);
   return (
-    <input
-      type={type}
-      className={`text-field ${value ? "has-value" : ""}`}
-      style={{ width: `${charCount + 1}ch` }}
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      autoFocus={autoFocus}
-      onBlur={onBlur}
-      aria-label={ariaLabel ?? placeholder}
-      autoComplete={autoComplete}
-      aria-describedby={ariaDescribedBy}
-    />
+    <span style={{ position: "relative", display: "inline-block", verticalAlign: "baseline" }}>
+      <span aria-hidden="true" style={{ visibility: "hidden", whiteSpace: "pre", font: "inherit", padding: "0 0 4px 0", minWidth: "3ch", display: "inline-block" }}>{display}</span>
+      <input
+        type={type}
+        className={`text-field ${value ? "has-value" : ""}`}
+        style={{ position: "absolute", left: 0, top: 0, width: "100%", boxSizing: "border-box" }}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        autoFocus={autoFocus}
+        onBlur={onBlur}
+        aria-label={ariaLabel ?? placeholder}
+        autoComplete={autoComplete}
+        aria-describedby={ariaDescribedBy}
+      />
+    </span>
   );
 }
 
@@ -1271,7 +1273,7 @@ function PhoneInput({
   };
 
   const displayValue = value ? formatPhone(value) : "";
-  const charCount = Math.max((displayValue || placeholder).length, 4);
+  const display = displayValue || placeholder;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
@@ -1279,19 +1281,22 @@ function PhoneInput({
   };
 
   return (
-    <input
-      type="tel"
-      inputMode="numeric"
-      className={`text-field ${value ? "has-value" : ""}`}
-      style={{ width: `${charCount + 1}ch` }}
-      placeholder={placeholder}
-      value={displayValue}
-      onChange={handleChange}
-      autoFocus={autoFocus}
-      onBlur={onBlur}
-      aria-label={ariaLabel ?? "Phone number"}
-      autoComplete={autoComplete}
-      aria-describedby={ariaDescribedBy}
-    />
+    <span style={{ position: "relative", display: "inline-block", verticalAlign: "baseline" }}>
+      <span aria-hidden="true" style={{ visibility: "hidden", whiteSpace: "pre", font: "inherit", padding: "0 0 4px 0", minWidth: "3ch", display: "inline-block" }}>{display}</span>
+      <input
+        type="tel"
+        inputMode="numeric"
+        className={`text-field ${value ? "has-value" : ""}`}
+        style={{ position: "absolute", left: 0, top: 0, width: "100%", boxSizing: "border-box" }}
+        placeholder={placeholder}
+        value={displayValue}
+        onChange={handleChange}
+        autoFocus={autoFocus}
+        onBlur={onBlur}
+        aria-label={ariaLabel ?? "Phone number"}
+        autoComplete={autoComplete}
+        aria-describedby={ariaDescribedBy}
+      />
+    </span>
   );
 }
