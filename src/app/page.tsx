@@ -939,9 +939,16 @@ export default function GetStarted() {
   // Display label for userType in dropdown trigger
   const userTypeLabel = userType === "individual" ? t.anIndividual : userType === "business" ? businessLabel : "";
 
+  // When embedded with vertical, force modal open immediately and skip render of background
+  if (vertical && !modalOpen) {
+    setModalOpen(true);
+    setUserType("business");
+    setStep(3);
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
-      {/* Landing — hidden when embedded with a vertical */}
+    <div className={vertical ? "" : "min-h-screen flex items-center justify-center"} style={{ background: vertical ? "transparent" : "var(--background)" }}>
+      {/* Landing — only shown when NOT embedded with a vertical */}
       {!vertical && (
         <div className="text-center fade-in">
           <div className="mb-10 flex justify-center">
