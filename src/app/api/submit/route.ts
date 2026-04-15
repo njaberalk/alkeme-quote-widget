@@ -24,7 +24,7 @@ export async function OPTIONS() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { email, fullName, userType, insuranceType, city, state, industry, employeeCount, phone, comments } = body;
+    const { email, fullName, userType, insuranceType, city, state, industry, employeeCount, phone, comments, vertical } = body;
 
     if (!email || !fullName) {
       return NextResponse.json({ error: "Email and name are required" }, { status: 400, headers: corsHeaders });
@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
         ...(employeeCount && { employee_count: employeeCount }),
         phone,
         ...(comments && { comments }),
+        vertical: vertical || 'general',
         source: "insurance_form_widget",
         created_at: Math.floor(Date.now() / 1000),
       }),
@@ -69,6 +70,7 @@ export async function POST(req: NextRequest) {
         data: {
           insurance_type: insuranceType,
           user_type: userType,
+          vertical: vertical || 'general',
         },
       }),
     });

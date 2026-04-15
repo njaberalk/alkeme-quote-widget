@@ -5,6 +5,7 @@ import "./widget.css";
 
 interface WidgetConfig {
   apiUrl: string;
+  vertical?: string;
 }
 
 function mount(selector: string, config: WidgetConfig) {
@@ -14,7 +15,7 @@ function mount(selector: string, config: WidgetConfig) {
     return;
   }
   const root = createRoot(container);
-  root.render(<InsuranceForm apiUrl={config.apiUrl} />);
+  root.render(<InsuranceForm apiUrl={config.apiUrl} vertical={config.vertical} />);
 }
 
 // Expose globally
@@ -25,8 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const el = document.getElementById("insurance-form");
   if (el) {
     const apiUrl = el.dataset.apiUrl;
+    const vertical = el.dataset.vertical;
     if (apiUrl) {
-      mount("#insurance-form", { apiUrl });
+      mount("#insurance-form", { apiUrl, vertical });
     }
   }
 });

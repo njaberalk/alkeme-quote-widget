@@ -32,6 +32,168 @@ const INDUSTRIES = [
 
 const EMPLOYEE_COUNTS = ["1-5", "6-25", "26-50", "51-100", "101-500", "500+"];
 
+// ---- Vertical Configs ----
+// When data-vertical is set, these override the default insurance types, industries, and heading text
+interface VerticalConfig {
+  heading?: string;
+  subtext?: string;
+  insuranceTypesBusiness: string[];
+  industries: string[];
+  employeeCounts?: string[];
+  businessLabel?: string;    // replaces "a business" in step 1
+  industryLabel?: string;    // replaces "industry" placeholder in step 3
+  employeeLabel?: string;    // replaces "employees" in step 3
+}
+
+const VERTICALS: Record<string, VerticalConfig> = {
+  trucking: {
+    heading: "Get a trucking insurance quote.",
+    subtext: "Answer a few quick questions about your operation.",
+    insuranceTypesBusiness: ["Auto Liability", "Physical Damage", "Motor Truck Cargo", "Workers' Comp"],
+    industries: ["Owner-Operator", "Small Fleet (2-15)", "Large Fleet (16+)", "Hot Shot", "Flatbed", "Refrigerated", "Hazmat", "Intermodal", "LTL/Last Mile", "Other"],
+    employeeCounts: ["1", "2-5", "6-15", "16-50", "50+"],
+    businessLabel: "a trucking operation",
+    industryLabel: "operation type",
+    employeeLabel: "power units.",
+  },
+  towing: {
+    heading: "Get a towing insurance quote.",
+    subtext: "Answer a few quick questions about your operation.",
+    insuranceTypesBusiness: ["Auto Liability", "On-Hook Coverage", "Garagekeepers", "Workers' Comp"],
+    industries: ["Light-Duty Towing", "Medium-Duty Towing", "Heavy-Duty Recovery", "Roadside Assistance", "Repossession", "Municipal/Police Towing", "Motor Club", "Long-Distance", "Motorcycle Specialty", "Other"],
+    employeeCounts: ["1-3", "4-10", "11-25", "25+"],
+    businessLabel: "a towing operation",
+    industryLabel: "towing type",
+    employeeLabel: "tow trucks.",
+  },
+  cannabis: {
+    heading: "Get a cannabis insurance quote.",
+    subtext: "Answer a few quick questions about your operation.",
+    insuranceTypesBusiness: ["General Liability", "Product Liability", "Crop Coverage", "Workers' Comp"],
+    industries: ["Dispensary/Retail", "Cultivator/Grower", "Manufacturer/Processor", "Distributor", "Testing Lab", "Multi-License Operator", "Hemp/CBD", "Delivery Services", "Ancillary", "Other"],
+    employeeCounts: ["1-5", "6-15", "16-30", "31-50", "50+"],
+    businessLabel: "a cannabis business",
+    industryLabel: "license type",
+    employeeLabel: "employees.",
+  },
+  hospitality: {
+    heading: "Get a hospitality insurance quote.",
+    subtext: "Answer a few quick questions about your venue.",
+    insuranceTypesBusiness: ["General Liability", "Liquor Liability", "Property", "Workers' Comp"],
+    industries: ["Restaurant", "Bar/Nightclub", "Hotel/Resort", "Brewery/Winery", "Catering/Events", "Cafe/Coffee", "Food Truck", "Banquet Venue", "Boutique Hotel", "Other"],
+    businessLabel: "a hospitality business",
+    industryLabel: "venue type",
+    employeeLabel: "employees.",
+  },
+  construction: {
+    heading: "Get a construction insurance quote.",
+    subtext: "Answer a few quick questions about your operation.",
+    insuranceTypesBusiness: ["General Liability", "Workers' Comp", "Builders Risk", "Commercial Auto"],
+    industries: ["General Contractor", "Residential Builder", "Commercial Builder", "Electrical", "Plumbing/HVAC", "Roofing", "Concrete/Masonry", "Demolition", "Design-Build", "Other"],
+    employeeCounts: ["1-5", "6-15", "16-50", "51-100", "100+"],
+    businessLabel: "a construction company",
+    industryLabel: "trade",
+    employeeLabel: "employees.",
+  },
+  'employee-benefits': {
+    heading: "Get an employee benefits consultation.",
+    subtext: "Answer a few quick questions about your workforce.",
+    insuranceTypesBusiness: ["Group Health", "Dental", "Vision", "Retirement Plans"],
+    industries: ["Small Business (2-50)", "Mid-Market (51-250)", "Large Employer (250+)", "Nonprofit", "Technology", "Healthcare", "Manufacturing", "Professional Services", "Retail/Hospitality", "Other"],
+    employeeCounts: ["2-10", "11-50", "51-250", "251-1000", "1000+"],
+    businessLabel: "an employer",
+    industryLabel: "company type",
+    employeeLabel: "employees.",
+  },
+  'business-insurance': {
+    heading: "Get a business insurance quote.",
+    subtext: "Answer a few quick questions about your business.",
+    insuranceTypesBusiness: ["General Liability", "Workers' Comp", "Commercial Property", "Cyber Liability"],
+    industries: ["Construction", "Technology", "Retail", "Manufacturing", "Hospitality", "Professional Services", "Real Estate", "Logistics", "Healthcare", "Other"],
+    businessLabel: "a business",
+    industryLabel: "industry",
+    employeeLabel: "employees.",
+  },
+  entertainment: {
+    heading: "Get an entertainment insurance quote.",
+    subtext: "Answer a few quick questions about your production or event.",
+    insuranceTypesBusiness: ["General Liability", "Production Insurance", "Event Cancellation", "Equipment Floater"],
+    industries: ["Film/TV Production", "Live Events", "Music Venue", "Theater/Performing Arts", "Sports Entertainment", "Amusement Park", "Festival/Fair", "Streaming/Digital", "Talent Agency", "Other"],
+    businessLabel: "an entertainment company",
+    industryLabel: "entertainment type",
+    employeeLabel: "employees.",
+  },
+  habitational: {
+    heading: "Get a habitational insurance quote.",
+    subtext: "Answer a few quick questions about your properties.",
+    insuranceTypesBusiness: ["Property Insurance", "General Liability", "Flood Insurance", "Umbrella/Excess"],
+    industries: ["Apartment Complex", "Condominium", "Student Housing", "HOA", "Mixed-Use Property", "Property Management", "Single-Family Rentals", "Affordable Housing", "Vacation Rentals", "Other"],
+    employeeCounts: ["1-10", "11-50", "51-100", "101-500", "500+"],
+    businessLabel: "a property owner/manager",
+    industryLabel: "property type",
+    employeeLabel: "units.",
+  },
+  automotive: {
+    heading: "Get an automotive insurance quote.",
+    subtext: "Answer a few quick questions about your dealership or shop.",
+    insuranceTypesBusiness: ["Garage Liability", "Garagekeepers", "Dealers Open Lot", "Workers' Comp"],
+    industries: ["Franchise Dealership", "Independent Dealer", "Auto Repair Shop", "Body/Collision Shop", "Parts Distributor", "Fleet Management", "Car Rental", "Tire Shop", "Auto Detailing", "Other"],
+    businessLabel: "an automotive business",
+    industryLabel: "operation type",
+    employeeLabel: "employees.",
+  },
+  security: {
+    heading: "Get a security insurance quote.",
+    subtext: "Answer a few quick questions about your security operation.",
+    insuranceTypesBusiness: ["General Liability", "Professional Liability", "Assault & Battery", "Firearms Liability"],
+    industries: ["Armed Guards", "Unarmed Security", "Executive Protection", "Event Security", "Campus Security", "Patrol Services", "Mobile Patrol", "Loss Prevention", "Cannabis Security", "Other"],
+    employeeCounts: ["1-10", "11-25", "26-50", "51-100", "100+"],
+    businessLabel: "a security company",
+    industryLabel: "service type",
+    employeeLabel: "guards.",
+  },
+  'senior-living': {
+    heading: "Get a senior living insurance quote.",
+    subtext: "Answer a few quick questions about your facility.",
+    insuranceTypesBusiness: ["General Liability", "Professional Liability", "Abuse & Molestation", "Workers' Comp"],
+    industries: ["Assisted Living", "Skilled Nursing", "Memory Care", "Independent Living", "CCRC", "Home Health Agency", "Adult Day Care", "Hospice", "Rehabilitation Center", "Other"],
+    employeeCounts: ["1-25", "26-50", "51-100", "101-250", "250+"],
+    businessLabel: "a senior care facility",
+    industryLabel: "facility type",
+    employeeLabel: "beds/residents.",
+  },
+  education: {
+    heading: "Get an education insurance quote.",
+    subtext: "Answer a few quick questions about your institution.",
+    insuranceTypesBusiness: ["General Liability", "Professional Liability", "Abuse & Molestation", "Cyber Liability"],
+    industries: ["K-12 Public School", "K-12 Private School", "Charter School", "College/University", "Preschool/Daycare", "Trade/Vocational", "Online Education", "Special Education", "After-School Program", "Other"],
+    employeeCounts: ["1-25", "26-100", "101-500", "501-2000", "2000+"],
+    businessLabel: "an educational institution",
+    industryLabel: "institution type",
+    employeeLabel: "students.",
+  },
+  architecture: {
+    heading: "Get an architecture insurance quote.",
+    subtext: "Answer a few quick questions about your firm.",
+    insuranceTypesBusiness: ["Professional Liability (E&O)", "General Liability", "Cyber Liability", "Project-Specific"],
+    industries: ["Residential Architecture", "Commercial Architecture", "Landscape Architecture", "Interior Design", "Urban Planning", "Structural Engineering", "Sustainable Design", "Historic Preservation", "Multi-Discipline", "Other"],
+    employeeCounts: ["Solo", "2-10", "11-25", "26-50", "50+"],
+    businessLabel: "an architecture firm",
+    industryLabel: "practice type",
+    employeeLabel: "staff.",
+  },
+  'pool-contractors': {
+    heading: "Get a pool contractor insurance quote.",
+    subtext: "Answer a few quick questions about your business.",
+    insuranceTypesBusiness: ["General Liability", "Completed Operations", "Workers' Comp", "Pollution Liability"],
+    industries: ["Pool Builder", "Hot Tub Installer", "Pool Service/Maintenance", "Pool Remodeling", "Commercial Pools", "Water Features", "Equipment Supplier", "Spa Contractor", "Pool Demolition", "Other"],
+    employeeCounts: ["1-5", "6-15", "16-30", "31-50", "50+"],
+    businessLabel: "a pool contractor",
+    industryLabel: "service type",
+    employeeLabel: "crew members.",
+  },
+};
+
 const LANG_KEY = "insurance-form-lang";
 
 // ---- i18n ----
@@ -270,7 +432,12 @@ function Confetti() {
 
 // ---- Main Component ----
 
-export function InsuranceForm({ apiUrl }: { apiUrl: string }) {
+export function InsuranceForm({ apiUrl, vertical }: { apiUrl: string; vertical?: string }) {
+  const vConfig = vertical ? VERTICALS[vertical] : undefined;
+  const activeInsuranceTypesBusiness = vConfig?.insuranceTypesBusiness || INSURANCE_TYPES_BUSINESS;
+  const activeIndustries = vConfig?.industries || INDUSTRIES;
+  const activeEmployeeCounts = vConfig?.employeeCounts || EMPLOYEE_COUNTS;
+
   const [modalOpen, setModalOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState<"forward" | "back">("forward");
@@ -319,6 +486,8 @@ export function InsuranceForm({ apiUrl }: { apiUrl: string }) {
 
   const t = i18n[lang];
 
+  const heading = vConfig?.heading || t.landingHeading;
+  const subtext = vConfig?.subtext || t.landingSubtext;
 
   // ---- Pre-fill from URL params ----
   useEffect(() => {
@@ -452,6 +621,7 @@ export function InsuranceForm({ apiUrl }: { apiUrl: string }) {
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,
         body: JSON.stringify({
+          vertical: vertical || 'general',
           email, fullName: `${firstName.trim()} ${lastName.trim()}`, userType,
           insuranceType: insuranceTypes.join(", "),
           city, state, industry, employeeCount, phone, comments,
@@ -537,7 +707,8 @@ export function InsuranceForm({ apiUrl }: { apiUrl: string }) {
   };
 
   // Display label for userType in dropdown trigger
-  const userTypeLabel = userType === "individual" ? t.anIndividual : userType === "business" ? t.aBusiness : "";
+  const businessLabel = vConfig?.businessLabel || t.aBusiness;
+  const userTypeLabel = userType === "individual" ? t.anIndividual : userType === "business" ? businessLabel : "";
 
   return (
     <div className="ifw" lang={lang}>
@@ -550,9 +721,9 @@ export function InsuranceForm({ apiUrl }: { apiUrl: string }) {
               <path d="M18 30 L26.5 38.5 L42 22" stroke="#25475E" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h1 className="ifw-sentence-heading" style={{ marginBottom: 16 }}>{t.landingHeading}</h1>
+          <h1 className="ifw-sentence-heading" style={{ marginBottom: 16 }}>{heading}</h1>
           <p className="ifw-subtitle" style={{ marginBottom: 40 }}>
-            {t.landingSubtext}
+            {subtext}
           </p>
           <button className="ifw-btn-primary" aria-label={t.getStarted} onClick={handleOpen}>
             {t.getStarted}
@@ -651,10 +822,10 @@ export function InsuranceForm({ apiUrl }: { apiUrl: string }) {
                   <SentenceSelect
                     value={userTypeLabel}
                     onChange={(label) => {
-                      const internal = label === t.anIndividual ? "individual" : label === t.aBusiness ? "business" : label;
+                      const internal = label === t.anIndividual ? "individual" : label === businessLabel ? "business" : label;
                       handleUserTypeChange(internal);
                     }}
-                    options={[t.anIndividual, t.aBusiness]}
+                    options={[t.anIndividual, businessLabel]}
                     placeholder="select one"
                     ariaLabel="I am"
                     t={t}
@@ -672,7 +843,7 @@ export function InsuranceForm({ apiUrl }: { apiUrl: string }) {
                       {t.selectAllThatApply}
                     </p>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                      {(isBusiness ? INSURANCE_TYPES_BUSINESS : INSURANCE_TYPES_INDIVIDUAL).map((type) => {
+                      {(isBusiness ? activeInsuranceTypesBusiness : INSURANCE_TYPES_INDIVIDUAL).map((type) => {
                         const selected = insuranceTypes.includes(type);
                         return (
                           <button
@@ -796,8 +967,8 @@ export function InsuranceForm({ apiUrl }: { apiUrl: string }) {
                   <SentenceSelect
                     value={industry}
                     onChange={setIndustry}
-                    options={INDUSTRIES}
-                    placeholder={t.industry}
+                    options={activeIndustries}
+                    placeholder={vConfig?.industryLabel || t.industry}
                     ariaLabel="Industry"
                     t={t}
                     labelMap={(v) => tLabel(t, v, industryKeys)}
@@ -808,12 +979,12 @@ export function InsuranceForm({ apiUrl }: { apiUrl: string }) {
                       <SentenceSelect
                         value={employeeCount}
                         onChange={setEmployeeCount}
-                        options={EMPLOYEE_COUNTS}
+                        options={activeEmployeeCounts}
                         placeholder={t.count}
                         ariaLabel="Employee count"
                         t={t}
                       />
-                      {" "}{t.withEmployees}
+                      {" "}{vConfig?.employeeLabel || t.withEmployees}
                     </span>
                   )}
                 </h1>
