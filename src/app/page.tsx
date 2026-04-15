@@ -453,31 +453,36 @@ function Confetti() {
 // ---- Main Component ----
 
 export default function GetStarted() {
-  // Read vertical from URL params
-  const [vertical, setVertical] = useState<string | null>(null);
-
-  useEffect(() => {
+  // Read vertical from URL params — initialize synchronously to avoid flash
+  const [vertical] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
     try {
-      const params = new URLSearchParams(window.location.search);
-      const v = params.get('vertical');
-      if (v && VERTICALS[v]) setVertical(v);
-    } catch {}
-  }, []);
+      const v = new URLSearchParams(window.location.search).get('vertical');
+      return v && VERTICALS[v] ? v : null;
+    } catch { return null; }
+  });
 
   const vConfig = vertical ? VERTICALS[vertical] : undefined;
   const activeInsuranceTypesBusiness = vConfig?.insuranceTypesBusiness || INSURANCE_TYPES_BUSINESS;
   const activeIndustries = vConfig?.industries || INDUSTRIES;
   const activeEmployeeCounts = vConfig?.employeeCounts || EMPLOYEE_COUNTS;
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [step, setStep] = useState(1);
+  // When vertical is set, start with modal open on step 3 (skip landing + step 1)
+  const [modalOpen, setModalOpen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return !!(params.get('vertical') || params.get('embed'));
+    } catch { return false; }
+  });
+  const [step, setStep] = useState(() => vertical ? 3 : 1);
   const [direction, setDirection] = useState<"forward" | "back">("forward");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [lang, setLang] = useState<Lang>("en");
 
-  const [userType, setUserType] = useState(""); // "individual" | "business"
+  const [userType, setUserType] = useState(vertical ? "business" : ""); // "individual" | "business"
   const [insuranceTypes, setInsuranceTypes] = useState<string[]>([]);
 
   const [firstName, setFirstName] = useState("");
