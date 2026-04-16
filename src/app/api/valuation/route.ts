@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
         base_valuation: result.baseValuation,
         revenue_bucket: result.revenueBucket,
         cagr_bucket: result.cagrBucket,
-        source: "agency_valuation_calculator",
+        source: "valuation_calculator",
         created_at: Math.floor(Date.now() / 1000),
       }),
     });
