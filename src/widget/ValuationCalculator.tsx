@@ -99,6 +99,10 @@ export function ValuationCalculator({ apiUrl }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
 
+  // Agency identity
+  const [agencyName, setAgencyName] = useState("");
+  const [agencyWebsite, setAgencyWebsite] = useState("");
+
   // Valuation inputs
   const [revenue, setRevenue] = useState(""); // digits-only string
   const [cagr, setCagr] = useState(""); // can be negative, allows decimals
@@ -121,16 +125,17 @@ export function ValuationCalculator({ apiUrl }: Props) {
   useEffect(() => {
     stepStart.current = Date.now();
     const labels: Record<number, string> = {
-      1: "revenue", 2: "cagr", 3: "line_of_business", 4: "ebitda_margin",
-      5: "location", 6: "contact", 7: "success",
+      1: "agency", 2: "revenue", 3: "cagr", 4: "line_of_business",
+      5: "ebitda_margin", 6: "location", 7: "contact", 8: "success",
     };
     trackEvent("step_viewed", { step, stepName: labels[step] });
-    setLiveRegion(`Step ${step} of 6`);
+    setLiveRegion(`Step ${step} of 7`);
   }, [step]);
 
-  const TOTAL_STEPS = 6;
+  const TOTAL_STEPS = 7;
 
   // Validators
+  const agencyNameValid = agencyName.trim().length > 0;
   const revenueNum = revenue ? parseInt(revenue, 10) : NaN;
   const revenueValid = !isNaN(revenueNum) && revenueNum >= 0;
   const cagrNum = cagr !== "" && cagr !== "-" ? parseFloat(cagr) : NaN;
@@ -145,12 +150,13 @@ export function ValuationCalculator({ apiUrl }: Props) {
   const contactValid = firstName.trim().length > 0 && lastName.trim().length > 0 && emailValid && phoneValid;
 
   const canAdvance =
-    (step === 1 && revenueValid && revenueNum > 0) ||
-    (step === 2 && cagrValid) ||
-    (step === 3 && lobValid) ||
-    (step === 4 && ebitdaValid) ||
-    (step === 5 && locationValid) ||
-    (step === 6 && contactValid);
+    (step === 1 && agencyNameValid) ||
+    (step === 2 && revenueValid && revenueNum > 0) ||
+    (step === 3 && cagrValid) ||
+    (step === 4 && lobValid) ||
+    (step === 5 && ebitdaValid) ||
+    (step === 6 && locationValid) ||
+    (step === 7 && contactValid);
 
   const completeStep = () => {
     trackEvent("step_completed", { step, durationMs: Date.now() - stepStart.current });
@@ -190,6 +196,8 @@ export function ValuationCalculator({ apiUrl }: Props) {
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,
         body: JSON.stringify({
+          agencyName: agencyName.trim(),
+          agencyWebsite: agencyWebsite.trim(),
           revenue: revenueNum,
           cagrPct: cagrNum,
           lineOfBusiness,
@@ -242,7 +250,53 @@ export function ValuationCalculator({ apiUrl }: Props) {
             <StepWrap direction={direction}>
               <div className="ifw-divider-text ifw-fade-in">What&apos;s your agency worth?</div>
               <h1 className="ifw-sentence-heading">
-                My agency&apos;s annual revenue is{" "}
+                My agency is called{" "}
+                <InlineInput
+                  value={agencyName}
+                  onChange={setAgencyName}
+                  placeholder="Agency name"
+                  autoFocus
+                  ariaLabel="Agency name"
+                />
+                {agencyName.trim() && (
+                  <span className="ifw-fade-in">
+                    {" "}and you can find us at{" "}
+                    <InlineInput
+                      value={agencyWebsite}
+                      onChange={setAgencyWebsite}
+                      placeholder="yoursite.com"
+                      ariaLabel="Agency website (optional)"
+                      autoComplete="url"
+                    />
+                  </span>
+                )}
+                .
+              </h1>
+              {agencyName.trim() && (
+                <p className="ifw-fade-in" style={{
+                  marginTop: 16,
+                  fontSize: 13,
+                  color: "var(--ifw-text-muted)",
+                  fontStyle: "italic",
+                  lineHeight: 1.6,
+                }}>
+                  Website is optional — leave blank if you don&apos;t have one.
+                </p>
+              )}
+              {agencyNameValid && (
+                <div style={{ marginTop: 32 }} className="ifw-fade-in">
+                  <button className="ifw-btn-primary" onClick={nextStep}>Continue →</button>
+                </div>
+              )}
+            </StepWrap>
+          )}
+
+          {step === 2 && (
+            <StepWrap direction={direction}>
+              <button onClick={prevStep} className="ifw-back-btn">← Back</button>
+              <div className="ifw-divider-text ifw-fade-in">Revenue</div>
+              <h1 className="ifw-sentence-heading">
+                {agencyName.trim() || "My agency"}&apos;s annual revenue is{" "}
                 <CurrencyInput
                   value={revenue}
                   onChange={setRevenue}
@@ -260,7 +314,7 @@ export function ValuationCalculator({ apiUrl }: Props) {
             </StepWrap>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <StepWrap direction={direction}>
               <button onClick={prevStep} className="ifw-back-btn">← Back</button>
               <div className="ifw-divider-text ifw-fade-in">Growth trajectory</div>
@@ -283,7 +337,7 @@ export function ValuationCalculator({ apiUrl }: Props) {
             </StepWrap>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <StepWrap direction={direction}>
               <button onClick={prevStep} className="ifw-back-btn">← Back</button>
               <div className="ifw-divider-text ifw-fade-in">Your business</div>
@@ -306,7 +360,7 @@ export function ValuationCalculator({ apiUrl }: Props) {
             </StepWrap>
           )}
 
-          {step === 4 && (
+          {step === 5 && (
             <StepWrap direction={direction}>
               <button onClick={prevStep} className="ifw-back-btn">← Back</button>
               <div className="ifw-divider-text ifw-fade-in">Profitability</div>
@@ -340,7 +394,7 @@ export function ValuationCalculator({ apiUrl }: Props) {
             </StepWrap>
           )}
 
-          {step === 5 && (
+          {step === 6 && (
             <StepWrap direction={direction}>
               <button onClick={prevStep} className="ifw-back-btn">← Back</button>
               <div className="ifw-divider-text ifw-fade-in">Where &amp; how big</div>
@@ -375,7 +429,7 @@ export function ValuationCalculator({ apiUrl }: Props) {
             </StepWrap>
           )}
 
-          {step === 6 && (
+          {step === 7 && (
             <StepWrap direction={direction}>
               <button onClick={prevStep} className="ifw-back-btn">← Back</button>
               <div className="ifw-divider-text ifw-fade-in">Where should we send it?</div>

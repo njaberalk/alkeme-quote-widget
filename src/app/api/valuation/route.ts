@@ -23,6 +23,8 @@ export async function OPTIONS() {
 }
 
 interface ValuationRequest {
+  agencyName: unknown;
+  agencyWebsite: unknown;
   revenue: unknown;
   cagrPct: unknown;
   lineOfBusiness: unknown;
@@ -48,6 +50,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as ValuationRequest;
 
+    const agencyName = asString(body.agencyName);
+    const agencyWebsite = asString(body.agencyWebsite);
     const revenue = asNumber(body.revenue);
     const cagrPct = asNumber(body.cagrPct);
     const ebitdaMarginPct = asNumber(body.ebitdaMarginPct);
@@ -66,6 +70,9 @@ export async function POST(req: NextRequest) {
     if (!firstName || !lastName) {
       return NextResponse.json({ error: "Name required" }, { status: 400, headers: corsHeaders });
     }
+    if (!agencyName) {
+      return NextResponse.json({ error: "Agency name required" }, { status: 400, headers: corsHeaders });
+    }
     if (revenue === null || revenue < 0 || revenue > 1_000_000_000) {
       return NextResponse.json({ error: "Valid revenue required" }, { status: 400, headers: corsHeaders });
     }
@@ -82,7 +89,7 @@ export async function POST(req: NextRequest) {
     if (!process.env.CUSTOMERIO_SITE_ID || !process.env.CUSTOMERIO_API_KEY) {
       // Dev fallback: log and return success so the UI flow works locally without CIO creds.
       console.warn("[valuation] CIO creds missing — skipping CIO, logging only.");
-      console.log("[valuation] result", { email, firstName, lastName, ...result });
+      console.log("[valuation] result", { email, firstName, lastName, agencyName, agencyWebsite, ...result });
       return NextResponse.json({ success: true }, { headers: corsHeaders });
     }
 
@@ -96,6 +103,8 @@ export async function POST(req: NextRequest) {
         first_name: firstName,
         last_name: lastName,
         phone,
+        agency_name: agencyName,
+        ...(agencyWebsite && { agency_website: agencyWebsite }),
         state,
         line_of_business: lineOfBusiness,
         employees,
@@ -124,6 +133,8 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         name: "valuation_requested",
         data: {
+          agency_name: agencyName,
+          agency_website: agencyWebsite || null,
           annual_revenue: revenue,
           cagr_pct: cagrPct,
           ebitda_margin_pct: ebitdaMarginPct,
