@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:widget": "vite build --config vite.config.ts"
+    "build:widget": "npm run build:widget:insurance && npm run build:widget:valuation",
+    "build:widget:insurance": "vite build --config vite.config.ts --mode insurance-form",
+    "build:widget:valuation": "vite build --config vite.config.ts --mode valuation-calculator"
   },
   "dependencies": {
     "customerio-node": "^4.3.0",

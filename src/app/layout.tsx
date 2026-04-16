@@ -19,6 +19,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Runs before React hydration — suppress landing page flash when embedded as modal */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var p=new URLSearchParams(window.location.search);if(p.get('vertical')||p.get('embed')){document.documentElement.classList.add('embed-mode');}}catch(e){}})();`,
+          }}
+        />
+        <style dangerouslySetInnerHTML={{ __html: `html.embed-mode body{background:transparent !important;}html.embed-mode .landing-view{display:none !important;}` }} />
+      </head>
       <body className={`${poppins.className} antialiased`}>
         {children}
       </body>

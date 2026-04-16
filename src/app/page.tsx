@@ -958,7 +958,7 @@ export default function GetStarted() {
     <div className={vertical ? "" : "min-h-screen flex items-center justify-center"} style={{ background: vertical ? "transparent" : "var(--background)" }}>
       {/* Landing — only shown when NOT embedded with a vertical */}
       {!vertical && (
-        <div className="text-center fade-in">
+        <div className="text-center fade-in landing-view">
           <div className="mb-10 flex justify-center">
             <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
               <rect width="60" height="60" rx="14" fill="#FFBF3C" />
